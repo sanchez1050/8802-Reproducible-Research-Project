@@ -1,0 +1,167 @@
+---
+title: "Social Trust among Members of Marginalized Communities"
+author: "SS"
+date: "11/28/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+### Introduction 
+As the United States moves toward a race plural future, the necessity of understanding social trust and cohesion is increasingly salient. Perceptions of social trust vary among individuals of subpopulations who historically and currently experience stigmatization. While the economic impacts of stigma and discrimination have been explored, the social and cultural impacts have received less attention (Gregory & Satterfield, 2002). Ethnic heterogeneity has previously been found to be associated with lower levels of social trust (Alesina & La Ferrara, 2002).    
+
+While factors associated with social trust have been examined within majority populations when met with integration of new or diverse peoples, examination of perceptions of social trust among members of minority subgroups has been less explored (Herroes & Criado, 2009).  While there is evidence that Black Americans in particular may perceive lower levels of social trust, examination of whether or not this pattern holds for members of the LGBTQ community has been less explored (Alesina & La Ferrera, 2002).   
+
+The hypothesis of this exploration of social trust by marginalized US subpopulation is that members of the Black, Latinx, and LGBTQ communities will have statistically significantly different levels of social trust from white and heterosexual populations.    
+
+### Methods 
+The following analysis utilizes data from the 2014 General Social Survey. Variables used to evaluate perceptions ofsocial trust include a perception of others' helpfulness which asks repondants"Would you say that most of the time people try to be helpful or that they are mostly just looking out for themselves?" and a trust variable which asks "Generally speaking, would you say that most people can be trusted or that you can't be too careful in dealing with people?"  Descriptive statistics were conducted with R software. Descriptive statistics and cross tabulations were performed, and Chi-square tests were used to determine whether or not statistically significant differences are present.  
+
+### Results 
+Otherall, about 1/3 of repondants (32%) think others can generally be trusted, 63% think others cannot generally be trusted.
+counts <- table(GSSsocialtrust$trustc)
+barplot(counts, main="Can others be trusted?", names.arg=c("Can Trust", "Cannot Trust", "Depends" ))  
+
+Differences in perceptions of social trust were statistically significantly different among Latinx, Black, and white respondents (p>.000). While 39% of non-Latinx white respondents felt people can generally be trusted, only 17% of Black and 18% of Latinx respondents felt the same. Likewise while 55% of non-Latinx white respondents felt people generally cannot be trusts, an overwhelming 80% of Black and 79% of Latinx respondents agreed. Likewise, differences in perceptions of others’ helpfulness were statistically significantly different among non-Latinx white, Black, and Latinx respondents (p>.000). While over half of non-Latinx white respondents felt people are generally helpful, only 40% of Black and 34% of Latinx respondents felt the same. While fewer than half of non-Latinx white respondents (38%) felt people are generally looking out for themselves, over half of Black (51%) and Latinx (56%) agreed. 
+
+Differences in perceptions of social trust among homosexual, bisexual and heterosexual individuals were also statistically significant (p>.05). Well over half of heterosexual respondents felt that people generally cannot be trusted (62%), just of half of bisexual respondents (56%) and fewer than half of homosexual respondents agreed (49%). One third of both bisexual and heterosexual respondents felt that people can generally be trusted; 40% of homosexual respondents agreed. Differences in perceptions of others’ helpfulness among homosexual, bisexual and heterosexual respondents were not statistically significant. 53% of both homosexual and bisexual respondents felt people are generally helpful; 50% of heterosexual respondents agreed. 
+
+
+
+```{r result, echo=FALSE, results=FALSE, warning=FALSE, message=FALSE}
+## Download data
+setwd ("~/Documents/OSU AU19/Demography")
+ls(all.names = TRUE)
+list.files()
+library(foreign)
+library(haven)
+GSSsocialtrust <- read_dta("~/Documents/OSU AU19/Demography/GSSsocialtrust.dta")
+GSSsocialtrust <- read_dta("~/Documents/OSU AU19/Demography/GSSsocialtrust.dta") 
+  convert.factors=TRUE 
+  convert.dates=TRUE
+  convert.underscore=TRUE
+  warn.missing.labels=TRUE 
+list.files()
+names(GSSsocialtrust)
+as.matrix(colnames(GSSsocialtrust))
+table("age")
+str(GSSsocialtrust)
+#install.packages("pastecs")
+library(pastecs)
+stat.desc(GSSsocialtrust)
+stat.desc(GSSsocialtrust[,c("race2","trustc")])
+stat.desc(GSSsocialtrust[, c("trustc")])
+table(GSSsocialtrust$trustc)
+GSSsocialtrust$trustc <- ordered(GSSsocialtrust$trustc, levels = c(1, 2, 3), labels = c("can trust", "cannot trust", "depends"))
+table(GSSsocialtrust$trustc)
+table(GSSsocialtrust$helpfulc)
+```
+
+```{r result1, echo=FALSE, results=FALSE, warning=FALSE, message=FALSE}
+GSSsocialtrust$helpfulc <- ordered(GSSsocialtrust$helpfulc, levels = c(1, 2, 3), labels = c("helpful", "lookout for self", "it depends"))
+table(GSSsocialtrust$helpfulc)
+table(GSSsocialtrust$race2)
+GSSsocialtrust$race2 <- factor(GSSsocialtrust$race2, levels = c(1, 2, 3), labels = c("Non-Latinx white", "Non-Latinx Black", "Latinx"))
+table(GSSsocialtrust$race2)
+table(GSSsocialtrust$sexorient)
+GSSsocialtrust$sexorient <- factor(GSSsocialtrust$sexorient, levels = c(1, 2, 3), labels = c("Lesbian, Gay, Homosexual", "Bisexual", "Heterosexual"))
+table(GSSsocialtrust$sexorient)
+table(GSSsocialtrust$race2)
+table(GSSsocialtrust$trustc)
+trustcrace2 <- table(GSSsocialtrust$trustc,GSSsocialtrust$race2) 
+prop.table(trustcrace2, 1)
+prop.table(trustcrace2, 2)
+prop.table(trustcrace2)
+chisq.test(trustcrace2)
+round (prop.table(trustcrace2,2),  2)
+round (prop.table(trustcrace2,2),  2)
+chisq.test(trustcrace2)
+addmargins (trustcrace2)
+#help/race crosstab, chisq
+helpfulcrace2 <- table(GSSsocialtrust$helpfulc,GSSsocialtrust$race2) 
+round (prop.table(helpfulcrace2,2),  2)
+chisq.test(helpfulcrace2)
+#trust/sexualorientation 
+trustcsexorient <- table(GSSsocialtrust$trustc,GSSsocialtrust$sexorient) 
+round (prop.table(trustcsexorient,2),  2)
+chisq.test(trustcsexorient)
+```
+
+```{r result2, echo=FALSE, results=FALSE, warning=FALSE, message=FALSE}
+#chisq  value is statsitcally signficant p<.05
+# but is much smaller (12.86 compared to 123.29) than in race cross tab 
+#also higher percent og gay ppl trust, than strait and bisexual, fewer than half
+#of gay ppl say you cannot trust ppl compared to .56% of bisexual ppl and 62% 
+# of heterosexuals 
+#help/sexorient crosstab, chisq
+helpfulcsexorient <- table(GSSsocialtrust$helpfulc,GSSsocialtrust$sexorient) 
+round (prop.table(helpfulcsexorient,2),  2)
+```
+
+```{r result5, echo=FALSE, results=FALSE, warning=FALSE, message=FALSE}
+chisq.test(helpfulcsexorient)
+#no statistically signficant difference in percetion of others/strangers' hepfulness among indidivuals who idnetify as gay,bisexual or straight
+#chi2 of .45 compared to 70.39 for race 
+```
+
+```{r result6, echo=FALSE, results=FALSE, warning=FALSE, message=FALSE}
+# 2 way cross tab
+library(gmodels)
+```
+
+```{r resultcon4, echo=FALSE, results=FALSE, warning=FALSE}
+library (ggplot2)
+CrossTable(GSSsocialtrust$trustc, GSSsocialtrust$sexorient)
+
+#simple bar plot #trust counts overall
+counts <- table(GSSsocialtrust$trustc)
+barplot(counts, main="Can others be trusted?", names.arg=c("Can Trust", "Cannot Trust", "Depends" ))
+```
+
+```{r resultcon8, echo=FALSE, results=FALSE, warning=FALSE}
+
+#helpfulness counts overall 
+counts <- table(GSSsocialtrust$helpfulc)
+barplot(counts, main="Are others generally helpful or looking out for themselves?", names.arg=c("Helpful", "Lookout for Self", "Depends" ))
+
+#race and trust, helpfulness bar graphs 
+
+
+png(filename="/Users/sabrinasanchez/Documents/OSU AU19/Demography/R Files Day 2/racetrust.png")
+```
+
+```{r resultcon7, echo=FALSE, results=TRUE, warning=FALSE, message=FALSE}
+CrossTable(GSSsocialtrust$trustc, GSSsocialtrust$sexorient)
+chisq.test(trustcsexorient)
+CrossTable(GSSsocialtrust$trustc, GSSsocialtrust$race2)
+chisq.test(trustcrace2)
+ggplot(GSSsocialtrust[!is.na(GSSsocialtrust$race2),c("race2","trustc")], aes(fill=race2, y=trustc, x=race2))+
+  geom_bar(postion="dodge", stat="identity")
+
+png(filename="/Users/sabrinasanchez/Documents/OSU AU19/Demography/R Files Day 2/racehelp.png")
+ggplot(GSSsocialtrust[!is.na(GSSsocialtrust$race2),c("race2","helpfulc")], aes(fill=race2, y=helpfulc, x=race2))+
+  geom_bar(postion="dodge", stat="identity")
+
+#sexual orientation trust and helpfulness perceptions plots
+plot(GSSsocialtrust$race2, GSSsocialtrust$trustc)
+
+plot(GSSsocialtrust$sexorient, GSSsocialtrust$trustc)
+
+plot(GSSsocialtrust$sexorient, GSSsocialtrust$helpfulc)
+
+plot(GSSsocialtrust$race2, GSSsocialtrust$helpfulc)
+```
+
+
+### Conclusions
+While this brief analysis is consistent with prior work that establishes that members of racial and ethnic minority groups exhibit lower perceptions of social trust, this analysis expands by including members of the LGBTQ community in the analysis. However, contrary to the hypothesized relationship a greater proportions of gay respondents (40%) say people can generally be trusted as compared to heterosexual respondent’s (33%) (p>.05). Further, fewer than half of gay respondents say people generally cannot be trusted as compared to over half (56%) of bisexual respondents and 62% of heterosexual respondents (p.>05).
+
+### References 
+Alesina, A., & La Ferrara, E. (2002). Who trusts others?. Journal of public economics, 85(2), 207-234.
+
+Gregory, R. S., & Satterfield, T. A. (2002). Beyond perception: The experience of risk and stigma in community contexts. Risk analysis, 22(2), 347-358.
+
+Herreros, F., & Criado, H. (2009). Social trust, social capital and perceptions of immigration. Political studies, 57(2), 337-355.
+
+
